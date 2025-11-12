@@ -1,9 +1,8 @@
 import java.util.Random;
 import java.util.Scanner;
 
-public class Word_Scrambler {
+public class WordScrambler {
 
-    // 1. Array of words to be randomly selected for the game.
     private static final String[] WORD_LIST = {
         "COMPUTER",
         "PROGRAMMING",
@@ -20,40 +19,24 @@ public class Word_Scrambler {
         "BOOLEAN",
         "INTEGRATION"
     };
-    
-    // Random object for shuffling and word selection
+
     private static final Random RANDOM = new Random();
 
-    /**
-     * Selects a random word from the WORD_LIST.
-     * @return A randomly chosen word in uppercase.
-     */
+    // Selects a random word
     public static String selectRandomWord() {
         int index = RANDOM.nextInt(WORD_LIST.length);
         return WORD_LIST[index];
     }
 
-    /**
-     * Scrambles the input word using the Fisher-Yates Shuffle.
-     * @param word The word to be scrambled.
-     * @return The scrambled word string.
-     */
+    // Scrambles the selected word
     public static String scrambleWord(String word) {
-        // Convert the String to a char array so individual characters can be rearranged
         char[] chars = word.toCharArray();
-        
-        // Loop backward through the array (Fisher-Yates Shuffle)
         for (int i = chars.length - 1; i > 0; i--) {
-            // Pick a random index j between 0 and i (inclusive)
             int j = RANDOM.nextInt(i + 1);
-            
-            // Swap the characters at position i and j
             char temp = chars[i];
             chars[i] = chars[j];
             chars[j] = temp;
         }
-        
-        // Convert the modified char array back into a String
         return new String(chars);
     }
 
@@ -63,55 +46,47 @@ public class Word_Scrambler {
         boolean keepPlaying = true;
 
         System.out.println("=====================================");
-        System.out.println("  Welcome to the Java Word Scrambler ");
+        System.out.println("   Welcome to the Java Word Scrambler");
         System.out.println("=====================================");
-        
+
         while (keepPlaying) {
-            
-            // 1. Select a random word from the list
             String originalWord = selectRandomWord();
-            
-            // 2. Scramble the word
             String scrambled = scrambleWord(originalWord);
-            
-            // 3. Re-scramble if it accidentally resulted in the original word
-            while (scrambled.equals(originalWord)) {
+
+            // Re-scramble if it's the same as the original
+            while (scrambled.equalsIgnoreCase(originalWord)) {
                 scrambled = scrambleWord(originalWord);
             }
-            
-            // Display the current challenge
-            System.out.println("\n--- Round Start | Current Score: " + score + " ---");
-            System.out.println("Your challenge word has " + originalWord.length() + " letters.");
+
+            System.out.println("\n--- New Round ---");
+            System.out.println("Your current score: " + score);
+            System.out.println("Word has " + originalWord.length() + " letters.");
             System.out.println("Scrambled Word: " + scrambled);
             System.out.println("-------------------------------------");
 
-            // Get the user's guess
-            System.out.print("Try to unscramble (or type 'QUIT' to end): ");
-            String userGuess = scanner.nextLine().toUpperCase();
+            System.out.print("Enter your guess (or type 'quit' to exit): ");
+            String userGuess = scanner.nextLine().trim();
 
-            if (userGuess.equals("QUIT")) {
+            // Case-insensitive quit command
+            if (userGuess.equalsIgnoreCase("quit")) {
                 keepPlaying = false;
-                continue; // Skip the rest of the loop and go to the final score display
+                continue;
             }
 
-            // Check if the guess matches the original word
-            if (userGuess.equals(originalWord)) {
-                score++; // Increase score for a correct guess
-                System.out.println("\n CORRECT! The word was " + originalWord + ".");
-                System.out.println("Your score is now: " + score);
+            // Case-insensitive comparison
+            if (userGuess.equalsIgnoreCase(originalWord)) {
+                score++;
+                System.out.println("✅ Correct! The word was " + originalWord + ".");
             } else {
-                System.out.println("\n INCORRECT. Your guess was '" + userGuess + "'.");
-                System.out.println("The correct word was: '" + originalWord + "'.");
-                // Optional: You could reset the score here if you wanted a more challenging game.
+                System.out.println("❌ Incorrect! The correct word was: " + originalWord + ".");
             }
         }
-        
-        // Game Over Summary
+
+        System.out.println("\n=====================================");
+        System.out.println("           GAME OVER!");
+        System.out.println(" Your Final Score: " + score);
         System.out.println("=====================================");
-        System.out.println("        G A M E   O V E R          ");
-        System.out.println("  Final Score: " + score + " Correct Guesses");
-        System.out.println("=====================================");
-        
+
         scanner.close();
     }
 }
